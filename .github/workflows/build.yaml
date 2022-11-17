@@ -1,0 +1,56 @@
+name: iperf3_windows_build
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 0 * * 6
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        repository: esnet/iperf
+        path: iperf
+        fetch-depth: 0
+        ref: master
+    
+    - name: msys install
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MSYS
+        update: true
+        install: make gcc zip git
+
+    - name: build
+      run: |
+        cd ./iperf
+        ./configure
+        make
+    - name: make zip
+      run: |
+        cd ./iperf
+        LATEST_TAG=$(git describe --abbrev=0 --tags)
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+        echo "Latest version of iperf is:$LATEST_TAG"
+        name=iperf3-windows-$LATEST_TAG
+        mkdir $name
+        cp src/iperf3.exe $name/
+        cp /usr/bin/msys-2.0.dll $name/
+        cp LICENSE $name/
+        zip -r $name.zip $name/
+    - name: release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        automatic_release_tag: ${{ inputs.build || env.LATEST_TAG }}
+        files: |
+          ./iperf/iperf3-windows-${{ inputs.build || env.LATEST_TAG }}.zip
