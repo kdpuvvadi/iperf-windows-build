@@ -2,8 +2,9 @@ name: iperf3_windows_build
 on:
   push:
   workflow_dispatch:
+  release:
   schedule:
-    - cron: 0 0 * * 6
+    - cron: 0 0 1 * *
 
 jobs:
   build:
