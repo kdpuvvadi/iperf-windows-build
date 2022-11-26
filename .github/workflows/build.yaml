@@ -1,6 +1,5 @@
 name: iperf3_windows_build
 on:
-  push:
   workflow_dispatch:
   release:
   schedule:

@@ -2,7 +2,7 @@
 
 iperf windows build using github actions
 
-## uses:
+## uses
 
 1. [iperf3](https://github.com/esnet/iperf)
 2. [Checkout](https://github.com/marketplace/actions/checkout)
@@ -11,5 +11,5 @@ iperf windows build using github actions
 
 ## Download
 
-Latest build [Download](../../releases/latest)
-Version 3.12 [Download](../../releases/3.12)
+* Latest build [Download](../../releases/latest)
+* Version 3.12 [Download](../../releases/3.12)
